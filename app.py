@@ -1,13 +1,8 @@
 from dotenv import load_dotenv
-import os
 from os import path
 
-if os.getenv('FLASK_ENV') == "development":
-    basedir = path.abspath(path.dirname(__file__))
-    load_dotenv(path.join(basedir, 'development.env'))
-else:
-    basedir = path.abspath(path.dirname(__file__))
-    load_dotenv(path.join(basedir, 'production.env'))
+basedir = path.abspath(path.dirname(__file__))
+load_dotenv(path.join(basedir, 'development.env'))
 
 from flask import Flask
 from api.views import get_currencies_from_tcmb
