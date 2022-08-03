@@ -1,7 +1,8 @@
-from flask import jsonify
+from .get_current_date import current_date
+from .get_current_time import current_time
 
 
-def reformat_tcmb_response(response_from_tcmb_as_dict):
+def reformat_tcmb_response_for_all_currencies(response_from_tcmb_as_dict):
     currencies_as_list = response_from_tcmb_as_dict["Tarih_Date"]["Currency"]
 
     reformatted_currencies_as_list = list()
@@ -16,4 +17,29 @@ def reformat_tcmb_response(response_from_tcmb_as_dict):
 
         reformatted_currencies_as_list.append(reformatted_response)
 
-    return jsonify(reformatted_currencies_as_list)
+    final_dict = dict()
+
+    final_dict["date"] = current_date()
+    final_dict["time"] = current_time()
+    final_dict["currencies"] = reformatted_currencies_as_list
+
+    return final_dict
+
+
+def reformat_tcmb_response_for_specific_currency(all_currencies, requested_currency_code):
+    requested_currency_as_dict = dict()
+
+    for currency_index in range(len(all_currencies["currencies"])):
+        if requested_currency_code.upper() == all_currencies["currencies"][currency_index]["currency_code"]:
+            requested_currency_as_dict = all_currencies["currencies"][currency_index]
+
+    final_dict = dict()
+
+    final_dict["date"] = current_date()
+    final_dict["time"] = current_time()
+    final_dict[requested_currency_code] = requested_currency_as_dict
+
+    if len(final_dict[requested_currency_code]) != 0:
+        return final_dict
+
+    return False
